@@ -1,0 +1,154 @@
+{% load static %}
+<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{%static 'css/index.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<div class="tabs-outer">
+    <div>
+        Total Revenue :- {{ totalRevenue }}
+    </div>
+    <div>
+        Total Orders :- {{ totalOrders}}
+    </div>
+</div>
+<div class="data-outer">
+    {% for branch, details in cardData.items %}
+    <div class="data-card">
+        <div class="data-branch-name">
+            {{branch}}
+        </div>
+        {% for key, value in details.items %}
+        {% if key == 'totalRevenue' %}
+        <div> Total Revenue -> {{value}}</div>
+        {% endif %}
+        {% if key == 'totalOrder' %}
+        <div> Total Orders -> {{value}}</div>
+        {% endif %}
+        {% if key == 'monthlyRevenue' %}
+        <div> Monthly Revenue -> {{value}}</div>
+        {% endif %}
+        {% if key == 'monthlyOrder' %}
+        <div> Monthly Orders -> {{value}}</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<div style="display: flex; flex-wrap: wrap; font-family: 'Nunito', sans-serif; justify-content: space-evenly;">
+    <div class="cards-outer">
+        <canvas id="monthWiseOrders" width="100" height="100"></canvas>
+        <div class="card-heading">Month wise order analysis</div>
+    </div>
+
+    <div class="cards-outer">
+        <canvas id="monthWiseRevenue" width="100" height="100"></canvas>
+        <div class="card-heading">Month wise revenue analysis</div>
+    </div>
+
+    <div class="cards-outer">
+        <canvas id="branchWiseOrders" width="100" height="100"></canvas>
+        <div class="card-heading">Branch wise order analysis</div>
+    </div>
+
+    <div class="cards-outer">
+        <canvas id="branchWiseRevenue" width="100" height="100"></canvas>
+        <div class="card-heading">Branch wise revenue analysis</div>
+    </div>
+</div>
+
+<script>
+    var cardData =  {{ cardData|safe }}
+    var graphData = {{ graphData|safe }}
+
+    var ctx = document.getElementById('monthWiseOrders').getContext('2d');
+    var monthWiseOrders = new Chart(ctx, {
+        type: 'line',
+        fill: false,
+        data: {
+            labels: graphData['monthWiseOrders_X'],
+            datasets: [{
+                label: 'Orders',
+                data: graphData['monthWiseOrders_Y'],
+                backgroundColor: ['rgba(246,246,246, 0.57)'],
+                borderColor: ['rgba(252, 77, 29, 0.7)']
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctx1 = document.getElementById('monthWiseRevenue').getContext('2d');
+    var monthWiseOrders = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: graphData['monthWiseRevenue_X'],
+            datasets: [{
+                label: 'Revenue',
+                data: graphData['monthWiseRevenue_Y'],
+                backgroundColor: ['rgba(246,246,246, 0.57)'],
+                borderColor: ['rgba(252, 77, 29, 0.7)']
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctx2 = document.getElementById('branchWiseOrders').getContext('2d');
+    var monthWiseOrders = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: graphData['branchWiseOrders_X'],
+            datasets: [{
+                label: 'Orders',
+                data: graphData['branchWiseOrders_Y'],
+                backgroundColor: 'rgba(252, 77, 29, 0.5)',
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctx3 = document.getElementById('branchWiseRevenue').getContext('2d');
+    var monthWiseOrders = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: graphData['branchWiseRevenue_X'],
+            datasets: [{
+                label: 'Branch Revenue',
+                data: graphData['branchWiseRevenue_Y'],
+                backgroundColor: 'rgba(252, 77, 29, 0.5)',
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+</script>
