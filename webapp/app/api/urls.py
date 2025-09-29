@@ -19,4 +19,7 @@ from .views import *
 
 urlpatterns = [
     path('test/', TestApi.as_view()),
+    path('register/', Register.as_view()),
+    path('admin-login/', AdminLogin.as_view()),
+    path('get-all-register/', GetAllRegister.as_view()),
 ]
