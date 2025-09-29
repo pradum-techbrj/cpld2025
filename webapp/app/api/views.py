@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from app.models import Customer
+from rest_framework.authtoken.models import Token
 
 
 class TestApi(APIView):
@@ -43,9 +44,12 @@ class AdminLogin(APIView):
             username = data['username']
             password = data['password']
             user = authenticate(request, username=username, password=password)
+            
             if user is not None:
                 login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
                 response["message"] = "Login successful"
+                response["token"] = token.key
             else:
                 response['error'] = True
                 response['error_msg'] = "Invalid Credentials"
@@ -54,9 +58,8 @@ class AdminLogin(APIView):
             response['error_msg'] = str(e)
         return Response(response)
 
-
 class GetAllRegister(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         response = {"error": False, "error_msg": "", "data": []}
