@@ -14,10 +14,13 @@ class TestApi(APIView):
 
 class Register(APIView):
     def post(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": ""}
+        response = {
+            "error": False,
+            "error_msg": ""
+            }
         try:
             data = request.data
-            obj = Customer.objects.create(
+            obj=Customer.objects.create(
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 country=data['country'],
@@ -28,7 +31,8 @@ class Register(APIView):
                 department=data['department'],
                 utrNo=data['utrNo'],
                 paymentSS=data['paymentSS'],
-                amount=data['amount']
+                amount=data['amount'],
+                isPosterPresentation=data['isPosterPresentation']
             )
             response['register_id']=obj.id
         except Exception as e:
@@ -39,17 +43,21 @@ class Register(APIView):
 
 class AdminLogin(APIView):
     def post(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": ""}
+        response = {
+            "error": False, 
+            "error_msg": ""
+            }
         try:
             data = request.data
             username = data['username']
             password = data['password']
             user = authenticate(request, username=username, password=password)
+            
             if user is not None:
                 login(request, user)
                 token, created = Token.objects.get_or_create(user=user)
                 response["message"] = "Login successful"
-                response['token']=token.key
+                response["token"] = token.key
             else:
                 response['error'] = True
                 response['error_msg'] = "Invalid Credentials"
@@ -58,12 +66,15 @@ class AdminLogin(APIView):
             response['error_msg'] = str(e)
         return Response(response)
 
-
 class GetAllRegister(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": "", "data": []}
+        response = {
+            "error": False, 
+            "error_msg": "", 
+            "data": []
+            }
         try:
             customers = Customer.objects.all().order_by('-created_at')
             for customer in customers:
@@ -80,6 +91,7 @@ class GetAllRegister(APIView):
                     "utrNo": customer.utrNo,
                     "paymentSS": str(customer.paymentSS),
                     "amount": customer.amount,
+                    "isPosterPresentation":customer.isPosterPresentation,
                     "created_at": customer.created_at,
                 })
         except Exception as e:
