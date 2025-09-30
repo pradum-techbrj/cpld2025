@@ -14,10 +14,13 @@ class TestApi(APIView):
 
 class Register(APIView):
     def post(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": ""}
+        response = {
+            "error": False,
+            "error_msg": ""
+            }
         try:
             data = request.data
-            Customer.objects.create(
+            obj=Customer.objects.create(
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 country=data['country'],
@@ -28,8 +31,10 @@ class Register(APIView):
                 department=data['department'],
                 utrNo=data['utrNo'],
                 paymentSS=data['paymentSS'],
-                amount=data['amount']
+                amount=data['amount'],
+                isPosterPresentation=data['isPosterPresentation']
             )
+            response['register_id']=obj.id
         except Exception as e:
             response['error'] = True
             response['error_msg'] = str(e)
@@ -38,7 +43,10 @@ class Register(APIView):
 
 class AdminLogin(APIView):
     def post(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": ""}
+        response = {
+            "error": False, 
+            "error_msg": ""
+            }
         try:
             data = request.data
             username = data['username']
@@ -59,14 +67,19 @@ class AdminLogin(APIView):
         return Response(response)
 
 class GetAllRegister(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request, *args, **kwargs):
-        response = {"error": False, "error_msg": "", "data": []}
+        response = {
+            "error": False, 
+            "error_msg": "", 
+            "data": []
+            }
         try:
             customers = Customer.objects.all().order_by('-created_at')
             for customer in customers:
                 response['data'].append({
+                    "register_id":customer.id,
                     "first_name": customer.first_name,
                     "last_name": customer.last_name,
                     "country": customer.country,
@@ -78,6 +91,7 @@ class GetAllRegister(APIView):
                     "utrNo": customer.utrNo,
                     "paymentSS": str(customer.paymentSS),
                     "amount": customer.amount,
+                    "isPosterPresentation":customer.isPosterPresentation,
                     "created_at": customer.created_at,
                 })
         except Exception as e:
