@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from app.models import Customer
+from rest_framework.authtoken.models import Token
 
 
 class TestApi(APIView):
@@ -16,7 +17,7 @@ class Register(APIView):
         response = {"error": False, "error_msg": ""}
         try:
             data = request.data
-            Customer.objects.create(
+            obj = Customer.objects.create(
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 country=data['country'],
@@ -29,6 +30,7 @@ class Register(APIView):
                 paymentSS=data['paymentSS'],
                 amount=data['amount']
             )
+            response['register_id']=obj.id
         except Exception as e:
             response['error'] = True
             response['error_msg'] = str(e)
@@ -45,7 +47,9 @@ class AdminLogin(APIView):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
                 response["message"] = "Login successful"
+                response['token']=token.key
             else:
                 response['error'] = True
                 response['error_msg'] = "Invalid Credentials"
@@ -64,6 +68,7 @@ class GetAllRegister(APIView):
             customers = Customer.objects.all().order_by('-created_at')
             for customer in customers:
                 response['data'].append({
+                    "register_id":customer.id,
                     "first_name": customer.first_name,
                     "last_name": customer.last_name,
                     "country": customer.country,
