@@ -13,6 +13,7 @@ class Customer(models.Model):
     paymentSS = models.URLField()
     amount = models.IntegerField()
     isPosterPresentation=models.BooleanField(default=False)
+    posterURL = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

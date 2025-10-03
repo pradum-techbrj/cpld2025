@@ -32,7 +32,8 @@ class Register(APIView):
                 utrNo=data['utrNo'],
                 paymentSS=data['paymentSS'],
                 amount=data['amount'],
-                isPosterPresentation=data['isPosterPresentation']
+                isPosterPresentation=data['isPosterPresentation'],
+                posterURL = data['posterURL']
             )
             response['register_id']=obj.id
         except Exception as e:
@@ -92,6 +93,7 @@ class GetAllRegister(APIView):
                     "paymentSS": str(customer.paymentSS),
                     "amount": customer.amount,
                     "isPosterPresentation":customer.isPosterPresentation,
+                    "posterURL":customer.posterURL,
                     "created_at": customer.created_at,
                 })
         except Exception as e:
