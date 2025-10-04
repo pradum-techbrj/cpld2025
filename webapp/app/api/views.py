@@ -5,10 +5,18 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from app.models import Customer
 from rest_framework.authtoken.models import Token
+from .utils import *
 
 
 class TestApi(APIView):
     def get(self, request, *args, **kwargs):
+        # formData={
+        #     "name":"Pradum",
+        #     "email":"Pradum@techbrj.com",
+        #     "id":5,
+        #     "created_at":"2025-10-04"
+        # }
+        # sendEmailMsg(formData)
         return Response("ok", status=status.HTTP_200_OK)
 
 
@@ -36,6 +44,7 @@ class Register(APIView):
                 posterURL = data['posterURL']
             )
             response['register_id']=obj.id
+            sendEmailMsg(obj)
         except Exception as e:
             response['error'] = True
             response['error_msg'] = str(e)
