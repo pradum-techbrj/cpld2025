@@ -10,7 +10,7 @@ class Customer(models.Model):
     institution = models.TextField()
     department = models.TextField()
     utrNo = models.CharField(max_length=20)
-    paymentSS = models.URLField()
+    paymentSS = models.URLField(blank=True, null=True)
     amount = models.IntegerField()
     isPosterPresentation=models.BooleanField(default=False)
     posterURL = models.URLField(blank=True, null=True)
