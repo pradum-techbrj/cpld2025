@@ -1,1 +1,1 @@
-web: cd webapp && gunicorn webapp.wsgi:application --bind 0.0.0.0:$PORT
+web: ./start.sh

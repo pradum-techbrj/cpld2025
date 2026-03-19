@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Changing directory..."
+cd webapp
+
 echo "Running migrations..."
 python manage.py migrate --noinput
 
