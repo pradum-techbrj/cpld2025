@@ -86,6 +86,9 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_REGEX_WHITELIST = [
     '*',
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://cpld2025-production.up.railway.app"
+]
 
 DATABASES = {
     'default': {
