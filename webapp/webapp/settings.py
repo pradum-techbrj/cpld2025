@@ -144,5 +144,6 @@ EMAIL_HOST_USER = 'cpld2025lucknow@gmail.com'
 EMAIL_HOST_PASSWORD = 'eupbgcgzgcetbubp'
 
 
+
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
